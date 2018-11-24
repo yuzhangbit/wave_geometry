@@ -6,93 +6,21 @@ language: cpp
 services:
   - docker
 
-branches:
-  only:
-  - master
-  - develop
-
-cache:
-  # There is little benefit from ccache for testing a header-only library
-  ccache: false
-
-_common_sources: &common_sources
-  - ubuntu-toolchain-r-test
-  - llvm-toolchain-trusty-7
-
-_common_packages: &common_packages
-  - libboost1.58-dev
-  - libeigen3-dev
-  - libgtest-dev
-  - clang-format-7
 
 jobs:
   include:
-    - name: "GCC 6"
-      env: WAVE_CXX=g++-6 WAVE_CC=gcc-6
-      addons:
-        apt:
-          sources:
-            - sourceline: 'ppa:lkoppel/robotics'
-            - sourceline: 'ppa:kzemek/boost'
-            - *common_sources
-          packages:
-            - *common_packages
-            - g++-6
-    - name: "Clang 5"
-      env: WAVE_CXX=clang++-5.0 WAVE_CC=clang-5.0
-      addons:
-        apt:
-          sources:
-            - llvm-toolchain-trusty-5.0
-            - sourceline: 'ppa:lkoppel/robotics'
-            - sourceline: 'ppa:kzemek/boost'
-            - *common_sources
-          packages:
-            - *common_packages
-            - g++-6
-            - clang-5.0
-    - name: "GCC 8 AddressSanitizer"
-      env: WAVE_CXX=g++-8 WAVE_CC=gcc-8 \
-        ASAN_OPTIONS=detect_leaks=0:strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1 \
-        WAVE_CXX_FLAGS="-fsanitize=address -fsanitize-address-use-after-scope -O1 -DNDEBUG -fno-omit-frame-pointer -ftrack-macro-expansion=0 -fuse-ld=gold -Wno-misleading-indentation" \
-        WAVE_BUILD_TYPE=None
-      addons:
-        apt:
-          sources:
-            - sourceline: 'ppa:lkoppel/robotics'
-            - sourceline: 'ppa:kzemek/boost'
-            - *common_sources
-          packages:
-            - *common_packages
-            - g++-8
-            - binutils
     - name: "xenial"
       env: WAVE_CXX=g++-7 WAVE_CC==gcc-7
-      
-    - stage: deploy
-      name: "Docs"
-      language: python
-      python: "3.6"
-      env: DOCS_BUILD_DIR=build_docs
-      install:
-        - pip install sphinx==1.7.9 sphinx_rtd_theme recommonmark sphinx-markdown-tables git+git://github.com/leokoppel/sphinxcontrib-versioning
-      script:
-        - ./scripts/ci/ci_make_docs.bash
-      deploy:
-        provider: pages
-        skip-cleanup: true
-        github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
-        local-dir: $DOCS_BUILD_DIR
-        on:
-          all_branches: true  # branches limited by the below condition
-          condition: $TRAVIS_BRANCH =~ ^master|develop$
 
 before_script:
-  - export CXX=$WAVE_CXX CC=$WAVE_CC  # override travis with what we set in matrix
+  - docker run -d -it --name ci_xenial -v $(pwd):/home/wave_geometry aragdoll/docker_ubuntu:xenial;
 
 script:
-- ./scripts/ci/ci_check.bash
-- ./scripts/ci/ci_run.bash
+  - docker exec -it ci_xenial /bin/bash -c "/home/wave_geometry/scripts/install_cmake.sh";
+  - docker exec -it ci_xenial /bin/bash -c "/home/wave_geometry/scripts/install_gcc7.sh";
+  - export CXX=$WAVE_CXX CC=$WAVE_CC  # override travis with what we set in matrix
+  #- ./scripts/ci/ci_check.bash
+  #- ./scripts/ci/ci_run.bash
 
 notifications:
   email: false
