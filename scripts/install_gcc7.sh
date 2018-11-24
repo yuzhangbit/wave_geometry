@@ -12,6 +12,7 @@ main() {
     --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-7 \
     --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-7 \
     --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-7
+  sudo ldconfig
 }
 
 
