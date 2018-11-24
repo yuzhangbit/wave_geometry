@@ -13,7 +13,7 @@ jobs:
       env: WAVE_CXX=g++-7 WAVE_CC==gcc-7
 
 before_script:
-  - docker run -d -it --name ci_xenial -v $(pwd):/home/wave_geometry aragdoll/docker_ubuntu:xenial;
+  - docker run -d -it --name ci_xenial -e CXX=g++-7 -e CC=gcc-7 -v $(pwd):/home/wave_geometry aragdoll/docker_ubuntu:xenial;
 
 script:
 
