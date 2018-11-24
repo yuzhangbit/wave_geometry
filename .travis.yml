@@ -16,8 +16,8 @@ before_script:
   - docker run -d -it --name ci_xenial -v $(pwd):/home/wave_geometry aragdoll/docker_ubuntu:xenial;
 
 script:
-  - docker exec -it ci_xenial /bin/bash -c "/home/wave_geometry/scripts/install_cmake.sh";
   - docker exec -it ci_xenial /bin/bash -c "/home/wave_geometry/scripts/install_gcc7.sh";
+  - docker exec -it ci_xenial /bin/bash -c "/home/wave_geometry/scripts/install_cmake.sh";
   - export CXX=$WAVE_CXX CC=$WAVE_CC  # override travis with what we set in matrix
   #- ./scripts/ci/ci_check.bash
   #- ./scripts/ci/ci_run.bash

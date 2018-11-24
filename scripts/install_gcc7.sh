@@ -2,6 +2,7 @@
 set -e  # exit on first error
 
 main() {
+  sudo apt-get update -qq
   sudo apt-get install -y software-properties-common python-software-properties
   sudo add-apt-repository ppa:ubuntu-toolchain-r/test
   sudo apt update
