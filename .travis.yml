@@ -3,6 +3,8 @@ dist: trusty
 # of the expensive AddressSanitizer build running out.
 sudo: required
 language: cpp
+services:
+  - docker
 
 branches:
   only:
@@ -64,6 +66,9 @@ jobs:
             - *common_packages
             - g++-8
             - binutils
+    - name: "xenial"
+      env: WAVE_CXX=g++-7 WAVE_CC==gcc-7
+      
     - stage: deploy
       name: "Docs"
       language: python
