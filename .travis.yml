@@ -10,7 +10,6 @@ services:
 jobs:
   include:
     - name: "xenial"
-      env: WAVE_CXX=g++-7 WAVE_CC==gcc-7
 
 before_script:
   - docker run -d -it --name ci_xenial -e CXX=g++-7 -e CC=gcc-7 -v $(pwd):/home/wave_geometry aragdoll/docker_ubuntu:xenial;
@@ -18,7 +17,6 @@ before_script:
 script:
 
   - docker exec -it ci_xenial /bin/bash -c "/home/wave_geometry/scripts/install_gcc7.sh";
-  - export CXX=$WAVE_CXX CC=$WAVE_CC  # override travis with what we set in matrix
   - docker exec -it ci_xenial /bin/bash -c "/home/wave_geometry/scripts/install_cmake.sh";
   - docker exec -it ci_xenial /bin/bash -c "/home/wave_geometry/scripts/build.sh";
 
